@@ -4,7 +4,7 @@ import numpy as np
 alp = list('абвгдежзийклмнопрстуфхцчшщъыьэюя')
 alp_cod = {}
 for i in range(len(alp)):
-    str_bin = format(i, '05b')  # Проще и надёжнее
+    str_bin = format(i, '05b')  
     alp_cod[alp[i]] = str_bin
 
 word = 'стоп'
@@ -40,14 +40,14 @@ for col in range(5):
     code_word = (info_bits @ G) % 2  # вектор длины 7
     encoded[:, col] = code_word
 
-# === ВНЕСЕНИЕ ОШИБОК (как в оригинале) ===
+# ВНЕСЕНИЕ ОШИБОК
 p = encoded.copy()
 p[0, 1] = 0  # инверсия (если был 1 → 0, и наоборот)
 p[3, 2] = 1
 p[2, 3] = 0
 p[5, 4] = 1
 
-# === ДЕКОДИРОВАНИЕ И ИСПРАВЛЕНИЕ ===
+# ДЕКОДИРОВАНИЕ И ИСПРАВЛЕНИЕ
 # Вычисляем синдром для каждого столбца
 syndrome = (H @ p) % 2  # shape (3, 5)
 
@@ -66,7 +66,7 @@ for col in range(5):
             error_pos = syndrome_to_pos[s]
             corrected[error_pos, col] ^= 1  # инвертируем бит
 
-# === ВОССТАНОВЛЕНИЕ ИСХОДНЫХ ДАННЫХ ===
+# ВОССТАНОВЛЕНИЕ ИСХОДНЫХ ДАННЫХ
 # Берём первые 4 строки (информационные биты) из исправленной матрицы
 recovered_data = corrected[:4, :]  # shape (4, 5)
 
@@ -85,4 +85,5 @@ for i in range(0, 20, 5):
     word_end_list.append(reversed_alp_code[block])
 
 word_end = ''.join(word_end_list)
+
 print("Восстановленное слово:", word_end)
